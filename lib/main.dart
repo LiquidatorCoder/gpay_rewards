@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 
 void main() {
   runApp(
@@ -31,35 +32,175 @@ class RewardsScreen extends StatefulWidget {
 }
 
 class _RewardsScreenState extends State<RewardsScreen> {
+  late LinkedScrollControllerGroup _controllers;
+  late ScrollController _cloudsController;
+  late ScrollController _groundController;
+  late ScrollController _rewardsController;
+
+  @override
+  void initState() {
+    super.initState();
+    _controllers = LinkedScrollControllerGroup();
+    _cloudsController = ScrollController();
+    _groundController = ScrollController();
+    _rewardsController = _controllers.addAndGet();
+
+    _controllers.addOffsetChangedListener(
+      () {
+        final cloudsPosition = (_rewardsController.offset *
+                (_cloudsController.position.maxScrollExtent /
+                    _rewardsController.position.maxScrollExtent))
+            .clamp(0, _cloudsController.position.maxScrollExtent)
+            .toDouble();
+        final groundPosition = (_rewardsController.offset *
+                (_groundController.position.maxScrollExtent /
+                    _rewardsController.position.maxScrollExtent))
+            .clamp(0, _groundController.position.maxScrollExtent)
+            .toDouble();
+
+        setState(
+          () {
+            _cloudsController.jumpTo(
+              cloudsPosition,
+            );
+            _groundController.jumpTo(
+              groundPosition,
+            );
+          },
+        );
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _cloudsController.dispose();
+    _groundController.dispose();
+    _rewardsController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     // Google Pay rewards page UI in Flutter
     return Scaffold(
       backgroundColor: Colors.white,
       body: NestedScrollView(
+        physics: const ClampingScrollPhysics(),
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          const SliverAppBar(
-            // backgroundColor: Color.fromRGBO(246, 211, 181, 1),
+          SliverAppBar(
             backgroundColor: Colors.white,
             pinned: true,
             expandedHeight: 200.0,
-            leading: Icon(
+            leading: const Icon(
               Icons.arrow_back_ios,
               color: Color.fromRGBO(60, 64, 67, 1),
             ),
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
-              expandedTitleScale: 6,
-              title: Text(
-                'GPay',
-                style: TextStyle(
-                  // fontSize: 90,
-                  fontWeight: FontWeight.w500,
-                  color: Color.fromRGBO(60, 64, 67, 1),
+              background: SizedBox(
+                height: 200 + MediaQuery.of(context).padding.top,
+                width: MediaQuery.of(context).size.width,
+                child: Stack(
+                  children: [
+                    ListView.builder(
+                      controller: _cloudsController,
+                      physics: const ClampingScrollPhysics(),
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) => SizedBox(
+                        height: 200,
+                        width: 800,
+                        child: Image.asset(
+                          'assets/images/clouds.png',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      itemCount: 1,
+                    ),
+                    ListView.builder(
+                      controller: _groundController,
+                      physics: const ClampingScrollPhysics(),
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) => SizedBox(
+                        height: 200,
+                        width: 1200,
+                        child: Image.asset(
+                          'assets/images/ground.png',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      itemCount: 1,
+                    ),
+                    ListView.builder(
+                      controller: _rewardsController,
+                      physics: const ClampingScrollPhysics(),
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) => SizedBox(
+                        height: 200,
+                        width: 2400,
+                        child: Image.asset(
+                          'assets/images/rewards.png',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      itemCount: 1,
+                    ),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).padding.top),
+                        child: RichText(
+                          textAlign: TextAlign.center,
+                          text: const TextSpan(
+                            text: '₹',
+                            style: TextStyle(
+                              fontFamily: 'Product Sans',
+                              fontSize: 24,
+                              fontWeight: FontWeight.normal,
+                              color: Color.fromRGBO(60, 64, 67, 1),
+                            ),
+                            children: [
+                              TextSpan(
+                                text: '30',
+                                style: TextStyle(
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              TextSpan(
+                                text: '\nTotal rewards',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
               ),
+              titlePadding: EdgeInsetsDirectional.only(
+                bottom: innerBoxIsScrolled ? 16 : 80,
+              ),
+              title: innerBoxIsScrolled
+                  ? const Text(
+                      '₹30 Total rewards',
+                      style: TextStyle(
+                        fontFamily: 'Product Sans',
+                        fontWeight: FontWeight.normal,
+                        color: Color.fromRGBO(60, 64, 67, 1),
+                      ),
+                    )
+                  : null,
             ),
-            actions: [
+            actions: const [
               Padding(
                 padding: EdgeInsets.only(right: 16.0),
                 child: Icon(
@@ -87,6 +228,7 @@ class _RewardsScreenState extends State<RewardsScreen> {
           context: context,
           removeTop: true,
           child: GridView.builder(
+            physics: const ClampingScrollPhysics(),
             padding: const EdgeInsets.all(16.0),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
