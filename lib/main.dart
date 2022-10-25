@@ -325,16 +325,60 @@ class _RewardsScreenState extends State<RewardsScreen> {
               crossAxisSpacing: 12.0,
               childAspectRatio: 1.0,
             ),
-            itemBuilder: (context, index) => Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8.0),
-                image: const DecorationImage(
-                  image: AssetImage('assets/images/rewards_card.jpg'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
+            itemBuilder: (context, index) => index == 0
+                ? Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8.0),
+                      border: Border.all(
+                        color: Colors.grey.shade300,
+                        width: 1.0,
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 16),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text(
+                            '3 Months Free',
+                            style: TextStyle(
+                              fontSize: 26,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text(
+                            'Audible Membership',
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                        Image.asset(
+                          'assets/images/card_bottom.jpg',
+                          fit: BoxFit.fitHeight,
+                          height: 80,
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                    ),
+                  )
+                : Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8.0),
+                      image: const DecorationImage(
+                        image: AssetImage('assets/images/rewards_card.jpg'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
           ),
         ),
       ),
