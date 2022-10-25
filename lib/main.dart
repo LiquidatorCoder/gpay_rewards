@@ -1,66 +1,111 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    const App(),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'GPay',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorSchemeSeed: Colors.blue,
+        useMaterial3: false,
+        fontFamily: 'Product Sans',
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const RewardsScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+class RewardsScreen extends StatefulWidget {
+  const RewardsScreen({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<RewardsScreen> createState() => _RewardsScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
+class _RewardsScreenState extends State<RewardsScreen> {
   @override
   Widget build(BuildContext context) {
+    // Google Pay rewards page UI in Flutter
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+      backgroundColor: Colors.white,
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          const SliverAppBar(
+            // backgroundColor: Color.fromRGBO(246, 211, 181, 1),
+            backgroundColor: Colors.white,
+            pinned: true,
+            expandedHeight: 200.0,
+            leading: Icon(
+              Icons.arrow_back_ios,
+              color: Color.fromRGBO(60, 64, 67, 1),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            flexibleSpace: FlexibleSpaceBar(
+              centerTitle: true,
+              expandedTitleScale: 6,
+              title: Text(
+                'GPay',
+                style: TextStyle(
+                  // fontSize: 90,
+                  fontWeight: FontWeight.w500,
+                  color: Color.fromRGBO(60, 64, 67, 1),
+                ),
+              ),
             ),
-          ],
+            actions: [
+              Padding(
+                padding: EdgeInsets.only(right: 16.0),
+                child: Icon(
+                  Icons.more_horiz,
+                  color: Color.fromRGBO(60, 64, 67, 1),
+                ),
+              ),
+            ],
+          ),
+          const SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(24, 16, 0, 0),
+              child: Text(
+                'My Rewards',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  color: Color.fromRGBO(60, 64, 67, 1),
+                ),
+              ),
+            ),
+          ),
+        ],
+        body: MediaQuery.removePadding(
+          context: context,
+          removeTop: true,
+          child: GridView.builder(
+            padding: const EdgeInsets.all(16.0),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 12.0,
+              crossAxisSpacing: 12.0,
+              childAspectRatio: 1.0,
+            ),
+            itemBuilder: (context, index) => Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8.0),
+                image: const DecorationImage(
+                  image: AssetImage('assets/images/rewards_card.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
