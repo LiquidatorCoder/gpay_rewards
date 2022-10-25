@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 
@@ -35,6 +37,7 @@ class _RewardsScreenState extends State<RewardsScreen> {
   late LinkedScrollControllerGroup _controllers;
   late ScrollController _cloudsController;
   late ScrollController _groundController;
+  late ScrollController _rewardsBGController;
   late ScrollController _rewardsController;
 
   @override
@@ -43,7 +46,16 @@ class _RewardsScreenState extends State<RewardsScreen> {
     _controllers = LinkedScrollControllerGroup();
     _cloudsController = ScrollController();
     _groundController = ScrollController();
+    _rewardsBGController = _controllers.addAndGet();
     _rewardsController = _controllers.addAndGet();
+
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _rewardsController.animateTo(
+        800,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      ),
+    );
 
     _controllers.addOffsetChangedListener(
       () {
@@ -76,6 +88,7 @@ class _RewardsScreenState extends State<RewardsScreen> {
   void dispose() {
     _cloudsController.dispose();
     _groundController.dispose();
+    _rewardsBGController.dispose();
     _rewardsController.dispose();
     super.dispose();
   }
@@ -147,6 +160,57 @@ class _RewardsScreenState extends State<RewardsScreen> {
                         ),
                       ),
                       itemCount: 1,
+                    ),
+                    ListView.builder(
+                      controller: _rewardsBGController,
+                      physics: const ClampingScrollPhysics(),
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) => Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          height: 36,
+                          width: 36,
+                          margin: EdgeInsets.fromLTRB(
+                            6,
+                            0,
+                            6,
+                            24 + sin(index / 1.73).clamp(-1, 1) * 20,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color: index < 3 || index > (2400 ~/ 48) - 4
+                                ? Colors.transparent
+                                : index > (2400 ~/ 120)
+                                    ? Colors.blue.shade50
+                                    : Colors.blue,
+                          ),
+                          child: index < 3 || index > (2400 ~/ 48) - 4
+                              ? Container(
+                                  margin: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.grey.shade100,
+                                  ),
+                                )
+                              : index > (2400 ~/ 120)
+                                  ? Center(
+                                      child: Text(
+                                        (index - 2).toString(),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    )
+                                  : const Center(
+                                      child: Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                        ),
+                      ),
+                      itemCount: 2400 ~/ 48,
                     ),
                     Align(
                       alignment: Alignment.topCenter,
