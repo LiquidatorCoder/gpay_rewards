@@ -37,6 +37,7 @@ class _RewardsScreenState extends State<RewardsScreen> {
   late LinkedScrollControllerGroup _controllers;
   late ScrollController _cloudsController;
   late ScrollController _groundController;
+  late ScrollController _middleGroundController;
   late ScrollController _rewardsBGController;
   late ScrollController _rewardsController;
 
@@ -46,6 +47,7 @@ class _RewardsScreenState extends State<RewardsScreen> {
     _controllers = LinkedScrollControllerGroup();
     _cloudsController = ScrollController();
     _groundController = ScrollController();
+    _middleGroundController = ScrollController();
     _rewardsBGController = _controllers.addAndGet();
     _rewardsController = _controllers.addAndGet();
 
@@ -64,6 +66,11 @@ class _RewardsScreenState extends State<RewardsScreen> {
                     _rewardsController.position.maxScrollExtent))
             .clamp(0, _cloudsController.position.maxScrollExtent)
             .toDouble();
+        final middleGroundPosition = (_rewardsController.offset *
+                (_middleGroundController.position.maxScrollExtent /
+                    _rewardsController.position.maxScrollExtent))
+            .clamp(0, _middleGroundController.position.maxScrollExtent)
+            .toDouble();
         final groundPosition = (_rewardsController.offset *
                 (_groundController.position.maxScrollExtent /
                     _rewardsController.position.maxScrollExtent))
@@ -74,6 +81,9 @@ class _RewardsScreenState extends State<RewardsScreen> {
           () {
             _cloudsController.jumpTo(
               cloudsPosition,
+            );
+            _middleGroundController.jumpTo(
+              middleGroundPosition,
             );
             _groundController.jumpTo(
               groundPosition,
@@ -141,6 +151,21 @@ class _RewardsScreenState extends State<RewardsScreen> {
                         width: 1200,
                         child: Image.asset(
                           'assets/images/ground.png',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      itemCount: 1,
+                    ),
+                    ListView.builder(
+                      controller: _middleGroundController,
+                      physics: const ClampingScrollPhysics(),
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) => SizedBox(
+                        height: 200,
+                        width: 1800,
+                        child: Image.asset(
+                          'assets/images/middle_ground.png',
                           fit: BoxFit.cover,
                         ),
                       ),
