@@ -1,16 +1,9 @@
-# gpay_rewards
+# ElectricPe interview assignment
 
-A new Flutter project.
+## Problem statement
+To recreate the animations and UI in the Google Pay Rewards flow.
 
-## Getting Started
+## Solution
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Demo
+https://user-images.githubusercontent.com/42910433/198043415-781604b3-4f20-4f9f-8945-2f0f56308f49.MP4
